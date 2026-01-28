@@ -1242,14 +1242,7 @@ class FunkinLua {
 		Lua_helper.add_callback(lua, "startDialogue", function(dialogueFile:String, ?music:String = null) {
 			var path:String;
 			var songPath:String = Paths.formatToSongPath(Song.loadedSongName);
-			#if TRANSLATIONS_ALLOWED
-			path = Paths.getPath('data/$songPath/${dialogueFile}_${ClientPrefs.data.language}.json', TEXT);
-			#if MODS_ALLOWED
-			if(!FileSystem.exists(path))
-			#else
-			if(!Assets.exists(path, TEXT))
-			#end
-			#end
+
 				path = Paths.getPath('data/$songPath/$dialogueFile.json', TEXT);
 
 			luaTrace('startDialogue: Trying to load dialogue: ' + path);
@@ -1557,7 +1550,6 @@ class FunkinLua {
 
 		#if DISCORD_ALLOWED DiscordClient.addLuaCallbacks(lua); #end
 		#if ACHIEVEMENTS_ALLOWED Achievements.addLuaCallbacks(lua); #end
-		#if TRANSLATIONS_ALLOWED Language.addLuaCallbacks(lua); #end
 		HScript.implement(this);
 		#if flxanimate FlxAnimateFunctions.implement(this); #end
 		ReflectionFunctions.implement(this);
