@@ -160,6 +160,12 @@ class VisualsSettingsSubState extends BaseOptionsMenu
 			BOOL);
 		addOption(option);
 
+		var option:Option = new Option('Smooth Combo Stacking',
+			"If checked, Ratings and Combo stack exactly on top of eachother and won't float off, making a smooth effect. Does nothing when Combo Stacking is unchecked",
+			'smoothComboStacking',
+			BOOL);
+		addOption(option); //i like smoothness
+
 		super();
 		add(notes);
 		add(splashes);

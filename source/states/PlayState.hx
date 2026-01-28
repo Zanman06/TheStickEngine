@@ -2613,14 +2613,14 @@ class PlayState extends MusicBeatState
 		var comboSpr:FlxSprite = new FlxSprite().loadGraphic(Paths.image(uiFolder + 'combo' + uiPostfix));
 		comboSpr.screenCenter();
 		comboSpr.x = placement;
-		comboSpr.acceleration.y = FlxG.random.int(200, 300) * playbackRate * playbackRate;
-		comboSpr.velocity.y -= FlxG.random.int(140, 160) * playbackRate;
+		comboSpr.acceleration.y = if (ClientPrefs.data.smoothComboStacking) 250 else FlxG.random.int(200, 300) * playbackRate * playbackRate;
+		comboSpr.velocity.y -= if (ClientPrefs.data.smoothComboStacking) 150 else FlxG.random.int(140, 160) * playbackRate;
 		comboSpr.visible = (!ClientPrefs.data.hideHud && showCombo);
 		comboSpr.x += ClientPrefs.data.comboOffset[0];
 		comboSpr.y -= ClientPrefs.data.comboOffset[1];
 		comboSpr.antialiasing = antialias;
 		comboSpr.y += 60;
-		comboSpr.velocity.x += FlxG.random.int(1, 10) * playbackRate;
+		comboSpr.velocity.x += if (ClientPrefs.data.smoothComboStacking) 5 else FlxG.random.int(1, 10) * playbackRate;
 		comboGroup.add(rating);
 
 		if (!PlayState.isPixelStage)
