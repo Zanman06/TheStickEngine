@@ -5,12 +5,14 @@ class Highscore
 	public static var weekScores:Map<String, Int> = new Map();
 	public static var songScores:Map<String, Int> = new Map<String, Int>();
 	public static var songRating:Map<String, Float> = new Map<String, Float>();
+	public static var songMisses:Map<String, Int> = new Map<String, Int>();
 
 	public static function resetSong(song:String, diff:Int = 0):Void
 	{
 		var daSong:String = formatSong(song, diff);
 		setScore(daSong, 0);
 		setRating(daSong, 0);
+		setMisses(daSong, 0);
 	}
 
 	public static function resetWeek(week:String, diff:Int = 0):Void
@@ -19,7 +21,7 @@ class Highscore
 		setWeekScore(daWeek, 0);
 	}
 
-	public static function saveScore(song:String, score:Int = 0, ?diff:Int = 0, ?rating:Float = -1):Void
+	public static function saveScore(song:String, score:Int = 0, ?diff:Int = 0, ?rating:Float = -1, misses:Int = 0):Void
 	{
 		if(song == null) return;
 		var daSong:String = formatSong(song, diff);
@@ -29,12 +31,14 @@ class Highscore
 			if (songScores.get(daSong) < score)
 			{
 				setScore(daSong, score);
+				setMisses(daSong, misses);
 				if(rating >= 0) setRating(daSong, rating);
 			}
 		}
 		else
 		{
 			setScore(daSong, score);
+			setMisses(daSong, misses);
 			if(rating >= 0) setRating(daSong, rating);
 		}
 	}
@@ -77,6 +81,14 @@ class Highscore
 		FlxG.save.flush();
 	}
 
+	static function setMisses(song:String, misses:Int):Void
+	{
+		songMisses.set(song, misses);
+		FlxG.save.data.songMisses = songMisses;
+		FlxG.save.flush();
+
+	}
+
 	public static function formatSong(song:String, diff:Int):String
 	{
 		return Paths.formatToSongPath(song) + Difficulty.getFilePath(diff);
@@ -109,6 +121,15 @@ class Highscore
 		return weekScores.get(daWeek);
 	}
 
+	public static function getMisses(song:String, diff:Int):Int
+	{
+		var daSong:String = formatSong(song, diff);
+		if (!songMisses.exists(daSong))
+			setMisses(daSong, 0);
+
+		return songMisses.get(daSong);		
+	}
+
 	public static function load():Void
 	{
 		if (FlxG.save.data.weekScores != null)
@@ -119,5 +140,8 @@ class Highscore
 
 		if (FlxG.save.data.songRating != null)
 			songRating = FlxG.save.data.songRating;
+
+		if (FlxG.save.data.songMisses != null)
+			songMisses = FlxG.save.data.songMisses;
 	}
 }
