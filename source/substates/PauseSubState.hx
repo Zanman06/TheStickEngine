@@ -30,6 +30,9 @@ class PauseSubState extends MusicBeatSubstate
 
 	public static var songName:String = null;
 
+	var countdownText:Alphabet;
+	var closeTimer:FlxTimer;
+
 	override function create()
 	{
 		if(Difficulty.list.length < 2) menuItemsOG.remove('Change Difficulty'); //No need to change difficulty if there is only one!
@@ -165,7 +168,7 @@ class PauseSubState extends MusicBeatSubstate
 
 		if(controls.BACK)
 		{
-			close();
+			preClose();
 			return;
 		}
 
@@ -263,7 +266,7 @@ class PauseSubState extends MusicBeatSubstate
 			switch (daSelected)
 			{
 				case "Resume":
-					close();
+					preClose();
 				case 'Change Difficulty':
 					menuItems = difficultyChoices;
 					deleteSkipTimeText();
@@ -332,6 +335,11 @@ class PauseSubState extends MusicBeatSubstate
 					PlayState.chartingMode = false;
 					FlxG.camera.followLerp = 0;
 			}
+		}
+
+		if (closeTimer.active)
+		{
+			countdownText.text = closeTimer.timeLeft / 1000;
 		}
 	}
 
@@ -432,4 +440,21 @@ class PauseSubState extends MusicBeatSubstate
 
 	function updateSkipTimeText()
 		skipTimeText.text = FlxStringUtil.formatTime(Math.max(0, Math.floor(curTime / 1000)), false) + ' / ' + FlxStringUtil.formatTime(Math.max(0, Math.floor(FlxG.sound.music.length / 1000)), false);
+	
+	function preClose()
+	{
+		grpMenuShit.alpha = 0;
+		practiceText.alpha = 0;
+		chartingText.alpha = 0;
+		blueballedTxt.alpha = 0;
+		levelInfo.alpha = 0;
+
+		countdownText = new Alphabet(0, 0, ClientPrefs.data.unpauseDelay, true);
+		countdownText.screenCenter();
+		add(countdownText);
+
+		closeTimer = new FlxTimer().start(ClientPrefs.data.unpauseDelay, function(tmr:FlxTimer) {
+			close();
+		});
+	}
 }

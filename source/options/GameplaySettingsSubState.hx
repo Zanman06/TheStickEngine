@@ -116,6 +116,15 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.changeValue = 0.1;
 		addOption(option);
 
+		var option:Option = new Option('Unpause Delay',
+			'Changes how long it takes for the game to unpause.',
+			'unpauseDelay',
+			INT);
+		option.scrollSpeed = 1;
+		option.minValue = 0;
+		option.maxValue = 10;
+		addOption(option);
+
 		super();
 	}
 
