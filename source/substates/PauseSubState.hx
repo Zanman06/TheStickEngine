@@ -37,6 +37,7 @@ class PauseSubState extends MusicBeatSubstate
 
 	var countdownText:Alphabet;
 	var closeTimer:FlxTimer;
+	var startedCountdown:Bool = false;
 
 	override function create()
 	{
@@ -186,13 +187,16 @@ class PauseSubState extends MusicBeatSubstate
 		}
 
 		updateSkipTextStuff();
-		if (controls.UI_UP_P)
-		{
-			changeSelection(-1);
-		}
-		if (controls.UI_DOWN_P)
-		{
-			changeSelection(1);
+		
+		if (!startedCountdown){
+			if (controls.UI_UP_P)
+			{
+				changeSelection(-1);
+			}
+			if (controls.UI_DOWN_P)
+			{
+				changeSelection(1);
+			}
 		}
 
 		var daSelected:String = menuItems[curSelected];
@@ -342,9 +346,9 @@ class PauseSubState extends MusicBeatSubstate
 			}
 		}
 
-		if (closeTimer.active)
+		if (startedCountdown)
 		{
-			countdownText.text = Std.string(closeTimer.timeLeft / 1000);
+			countdownText.text = Std.string(Math.round(closeTimer.timeLeft * 1000) / 1000);
 		}
 	}
 
@@ -456,11 +460,14 @@ class PauseSubState extends MusicBeatSubstate
 		chartingText.alpha = 0;
 		blueballedTxt.alpha = 0;
 		levelInfo.alpha = 0;
+		levelDifficulty.alpha = 0;
 
-		countdownText = new Alphabet(0, 0, Std.string(ClientPrefs.data.unpauseDelay), true);
+		countdownText = new Alphabet(0, 0, Std.string(Math.round(ClientPrefs.data.unpauseDelay * 1000) / 1000.0), true);
 		countdownText.screenCenter();
+		countdownText.alignment = CENTERED;
 		add(countdownText);
 
+		startedCountdown = true;
 		closeTimer = new FlxTimer().start(ClientPrefs.data.unpauseDelay, function(tmr:FlxTimer) {
 			close();
 		});
