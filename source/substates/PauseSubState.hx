@@ -28,6 +28,11 @@ class PauseSubState extends MusicBeatSubstate
 	var missingTextBG:FlxSprite;
 	var missingText:FlxText;
 
+	var levelInfo:FlxText;
+	var levelDifficulty:FlxText;
+	var blueballedTxt:FlxText;
+	var chartingText:FlxText;
+
 	public static var songName:String = null;
 
 	var countdownText:Alphabet;
@@ -77,19 +82,19 @@ class PauseSubState extends MusicBeatSubstate
 		bg.scrollFactor.set();
 		add(bg);
 
-		var levelInfo:FlxText = new FlxText(20, 15, 0, PlayState.SONG.song, 32);
+		levelInfo= new FlxText(20, 15, 0, PlayState.SONG.song, 32);
 		levelInfo.scrollFactor.set();
 		levelInfo.setFormat(Paths.font("vcr.ttf"), 32);
 		levelInfo.updateHitbox();
 		add(levelInfo);
 
-		var levelDifficulty:FlxText = new FlxText(20, 15 + 32, 0, Difficulty.getString().toUpperCase(), 32);
+		levelDifficulty = new FlxText(20, 15 + 32, 0, Difficulty.getString().toUpperCase(), 32);
 		levelDifficulty.scrollFactor.set();
 		levelDifficulty.setFormat(Paths.font('vcr.ttf'), 32);
 		levelDifficulty.updateHitbox();
 		add(levelDifficulty);
 
-		var blueballedTxt:FlxText = new FlxText(20, 15 + 64, 0, Language.getPhrase("blueballed", "Blueballed: {1}", [PlayState.deathCounter]), 32);
+		blueballedTxt = new FlxText(20, 15 + 64, 0, Language.getPhrase("blueballed", "Blueballed: {1}", [PlayState.deathCounter]), 32);
 		blueballedTxt.scrollFactor.set();
 		blueballedTxt.setFormat(Paths.font('vcr.ttf'), 32);
 		blueballedTxt.updateHitbox();
@@ -103,7 +108,7 @@ class PauseSubState extends MusicBeatSubstate
 		practiceText.visible = PlayState.instance.practiceMode;
 		add(practiceText);
 
-		var chartingText:FlxText = new FlxText(20, 15 + 101, 0, Language.getPhrase("Charting Mode").toUpperCase(), 32);
+		chartingText = new FlxText(20, 15 + 101, 0, Language.getPhrase("Charting Mode").toUpperCase(), 32);
 		chartingText.scrollFactor.set();
 		chartingText.setFormat(Paths.font('vcr.ttf'), 32);
 		chartingText.x = FlxG.width - (chartingText.width + 20);
@@ -339,7 +344,7 @@ class PauseSubState extends MusicBeatSubstate
 
 		if (closeTimer.active)
 		{
-			countdownText.text = closeTimer.timeLeft / 1000;
+			countdownText.text = Std.string(closeTimer.timeLeft / 1000);
 		}
 	}
 
@@ -443,13 +448,16 @@ class PauseSubState extends MusicBeatSubstate
 	
 	function preClose()
 	{
-		grpMenuShit.alpha = 0;
+		for (item in grpMenuShit.members)
+		{
+			item.alpha = 0;
+		}
 		practiceText.alpha = 0;
 		chartingText.alpha = 0;
 		blueballedTxt.alpha = 0;
 		levelInfo.alpha = 0;
 
-		countdownText = new Alphabet(0, 0, ClientPrefs.data.unpauseDelay, true);
+		countdownText = new Alphabet(0, 0, Std.string(ClientPrefs.data.unpauseDelay), true);
 		countdownText.screenCenter();
 		add(countdownText);
 

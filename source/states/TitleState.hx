@@ -312,8 +312,40 @@ class TitleState extends MusicBeatState
 			titleTimer += FlxMath.bound(elapsed, 0, 1);
 			if (titleTimer > 2) titleTimer -= 2;
 		}
+		if (initialized && !transitioning && skippedIntro)
+		{
+			if (newTitle && !pressedEnter)
+			{
+				var timer:Float = titleTimer;
+				if (timer >= 1)
+					timer = (-timer) + 2;
+				
+				timer = FlxEase.quadInOut(timer);
+				
+				titleText.color = FlxColor.interpolate(titleTextColors[0], titleTextColors[1], timer);
+				titleText.alpha = FlxMath.lerp(titleTextAlphas[0], titleTextAlphas[1], timer);
+			}
+			
+			if(pressedEnter)
+			{
+				titleText.color = FlxColor.WHITE;
+				titleText.alpha = 1;
+				
+				if(titleText != null) titleText.animation.play('press');
 
-		
+				FlxG.camera.flash(ClientPrefs.data.flashing ? FlxColor.WHITE : 0x4CFFFFFF, 1);
+				FlxG.sound.play(Paths.sound('confirmMenu'), 0.7);
+
+				transitioning = true;
+				// FlxG.sound.music.stop();
+
+				new FlxTimer().start(1, function(tmr:FlxTimer)
+				{
+					MusicBeatState.switchState(new MainMenuState());
+					closedState = true;
+				});
+				// FlxG.sound.play(Paths.music('titleShoot'), 0.7);
+			}
 		}
 
 		if (initialized && pressedEnter && !skippedIntro)
@@ -436,6 +468,9 @@ class TitleState extends MusicBeatState
 	{
 		if (!skippedIntro)
 		{
+			remove(ngSpr);
+			remove(credGroup);
+			FlxG.camera.flash(FlxColor.WHITE, 4);
 			skippedIntro = true;
 		}
 	}

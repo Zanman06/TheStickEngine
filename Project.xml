@@ -76,8 +76,6 @@
 	<assets path="assets/week_assets"   rename="assets" exclude="*.mp3" unless="web"/>
 
 	<section if="MODS_ALLOWED">
-		<assets path='example_mods' rename='mods' embed='false' type='template' unless="mac"/>
-		<assets path='example_mods' rename='mods' embed='false' if="mac"/>
 		<assets path='list.txt' rename='modsList.txt' />
 	</section>
 	<assets path='art/readme.txt' rename='do NOT readme.txt' />

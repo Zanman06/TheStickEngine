@@ -33,10 +33,6 @@ class OptionsState extends MusicBeatState
 				openSubState(new options.GameplaySettingsSubState());
 			case 'Adjust Delay and Combo':
 				MusicBeatState.switchState(new options.NoteOffsetState());
-			case 'Changelog':
-				MusicBeatState.switchState(new options.ChangelogState());
-			case 'Language':
-				openSubState(new options.LanguageSubState());
 		}
 	}
 
