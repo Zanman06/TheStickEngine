@@ -45,7 +45,7 @@ import states.TitleState;
 	public var pauseMusic:String = 'Tea Time';
 	public var checkForUpdates:Bool = true;
 	public var comboStacking:Bool = true;
-	public var smoothComboStacking:Bool = true;
+	public var smoothComboStacking:Bool = false;
 	public var gameplaySettings:Map<String, Dynamic> = [
 		'scrollspeed' => 1.0,
 		'scrolltype' => 'multiplicative', 

@@ -2603,8 +2603,8 @@ class PlayState extends MusicBeatState
 		rating.x = placement - 40;
 		rating.y -= 60;
 		rating.acceleration.y = 550 * playbackRate * playbackRate;
-		rating.velocity.y -= FlxG.random.int(140, 175) * playbackRate;
-		rating.velocity.x -= FlxG.random.int(0, 10) * playbackRate;
+		rating.velocity.y -= if (ClientPrefs.data.smoothComboStacking) 158; else FlxG.random.int(140, 175) * playbackRate;
+		rating.velocity.x -= if (ClientPrefs.data.smoothComboStacking) 0; else FlxG.random.int(0, 10) * playbackRate;
 		rating.visible = (!ClientPrefs.data.hideHud && showRating);
 		rating.x += ClientPrefs.data.comboOffset[0];
 		rating.y -= ClientPrefs.data.comboOffset[1];
@@ -2613,14 +2613,14 @@ class PlayState extends MusicBeatState
 		var comboSpr:FlxSprite = new FlxSprite().loadGraphic(Paths.image(uiFolder + 'combo' + uiPostfix));
 		comboSpr.screenCenter();
 		comboSpr.x = placement;
-		comboSpr.acceleration.y = if (ClientPrefs.data.smoothComboStacking) 250 else FlxG.random.int(200, 300) * playbackRate * playbackRate;
-		comboSpr.velocity.y -= if (ClientPrefs.data.smoothComboStacking) 150 else FlxG.random.int(140, 160) * playbackRate;
+		comboSpr.acceleration.y = if (ClientPrefs.data.smoothComboStacking) 250; else FlxG.random.int(200, 300) * playbackRate * playbackRate;
+		comboSpr.velocity.y -= if (ClientPrefs.data.smoothComboStacking) 150; else FlxG.random.int(140, 160) * playbackRate;
 		comboSpr.visible = (!ClientPrefs.data.hideHud && showCombo);
 		comboSpr.x += ClientPrefs.data.comboOffset[0];
 		comboSpr.y -= ClientPrefs.data.comboOffset[1];
 		comboSpr.antialiasing = antialias;
 		comboSpr.y += 60;
-		comboSpr.velocity.x += if (ClientPrefs.data.smoothComboStacking) 5 else FlxG.random.int(1, 10) * playbackRate;
+		comboSpr.velocity.x += if (ClientPrefs.data.smoothComboStacking) 0; else FlxG.random.int(0, 10) * playbackRate;
 		comboGroup.add(rating);
 
 		if (!PlayState.isPixelStage)
@@ -2654,9 +2654,9 @@ class PlayState extends MusicBeatState
 			else numScore.setGraphicSize(Std.int(numScore.width * daPixelZoom));
 			numScore.updateHitbox();
 
-			numScore.acceleration.y = FlxG.random.int(200, 300) * playbackRate * playbackRate;
-			numScore.velocity.y -= FlxG.random.int(140, 160) * playbackRate;
-			numScore.velocity.x = FlxG.random.float(-5, 5) * playbackRate;
+			numScore.acceleration.y = if (ClientPrefs.data.smoothComboStacking) 250; else FlxG.random.int(200, 300) * playbackRate * playbackRate;
+			numScore.velocity.y -= if (ClientPrefs.data.smoothComboStacking) 150; else FlxG.random.int(140, 160) * playbackRate;
+			numScore.velocity.x = if (ClientPrefs.data.smoothComboStacking) 0; else FlxG.random.float(-5, 5) * playbackRate;
 			numScore.visible = !ClientPrefs.data.hideHud;
 			numScore.antialiasing = antialias;
 
