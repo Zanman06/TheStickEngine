@@ -39,6 +39,10 @@ class PauseSubState extends MusicBeatSubstate
 	var closeTimer:FlxTimer;
 	var startedCountdown:Bool = false;
 
+	var levelInfoTween:FlxTween;
+	var levelDifficultyTween:FlxTween;
+	var blueballedTxtTween:FlxTween;
+
 	override function create()
 	{
 		if(Difficulty.list.length < 2) menuItemsOG.remove('Change Difficulty'); //No need to change difficulty if there is only one!
@@ -127,9 +131,9 @@ class PauseSubState extends MusicBeatSubstate
 		blueballedTxt.x = FlxG.width - (blueballedTxt.width + 20);
 
 		FlxTween.tween(bg, {alpha: 0.6}, 0.4, {ease: FlxEase.quartInOut});
-		FlxTween.tween(levelInfo, {alpha: 1, y: 20}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.3});
-		FlxTween.tween(levelDifficulty, {alpha: 1, y: levelDifficulty.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.5});
-		FlxTween.tween(blueballedTxt, {alpha: 1, y: blueballedTxt.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.7});
+		levelInfoTween = FlxTween.tween(levelInfo, {alpha: 1, y: 20}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.3});
+		levelDifficultyTween = FlxTween.tween(levelDifficulty, {alpha: 1, y: levelDifficulty.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.5});
+		blueballedTxtTween = FlxTween.tween(blueballedTxt, {alpha: 1, y: blueballedTxt.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.7});
 
 		grpMenuShit = new FlxTypedGroup<Alphabet>();
 		add(grpMenuShit);
@@ -172,7 +176,7 @@ class PauseSubState extends MusicBeatSubstate
 
 		super.update(elapsed);
 
-		if(controls.BACK)
+		if(controls.BACK && !startedCountdown)
 		{
 			preClose();
 			return;
@@ -230,7 +234,7 @@ class PauseSubState extends MusicBeatSubstate
 				}
 		}
 
-		if (controls.ACCEPT && (cantUnpause <= 0 || !controls.controllerMode))
+		if (controls.ACCEPT && (cantUnpause <= 0 || !controls.controllerMode) && !startedCountdown)
 		{
 			if (menuItems == difficultyChoices)
 			{
@@ -456,6 +460,11 @@ class PauseSubState extends MusicBeatSubstate
 		{
 			item.alpha = 0;
 		}
+		
+		levelInfoTween.cancel();
+		levelDifficultyTween.cancel();
+		blueballedTxtTween.cancel();
+
 		practiceText.alpha = 0;
 		chartingText.alpha = 0;
 		blueballedTxt.alpha = 0;
