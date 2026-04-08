@@ -2,6 +2,7 @@ package states;
 
 import backend.Mods;
 import backend.Song;
+import backend.Highscore;
 
 import flixel.FlxObject;
 
@@ -30,7 +31,13 @@ class CodeState extends MusicBeatState
 	public var inputBox:FlxInputText;
 
 	var invalid:FlxText;
+	var scoreAndAcc:FlxText;
 	var canType = true;
+	
+	var lerpScore:Int = 0;
+	var lerpRating:Float = 0;
+	var intendedScore:Int = 0;
+	var intendedRating:Float = 0;
 
     override function create()
 	{
@@ -104,9 +111,7 @@ class CodeState extends MusicBeatState
 					switch(text.toLowerCase())
 					{
 						case "":
-							new FlxTimer().start(1, function(tmr:FlxTimer) {
 							startSongThing('');
-							});
 						default:
 							invalidLOL();
 					}
@@ -121,6 +126,15 @@ class CodeState extends MusicBeatState
     	invalid.shadowOffset.set(2,2);
     	invalid.screenCenter();
     	invalid.y += 50;
+
+        scoreAndAcc = new FlxText(0, 0, 0, "", 32);
+    	scoreAndAcc.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, SHADOW,FlxColor.BLACK);
+    	scoreAndAcc.shadowOffset.set(2,2);
+    	scoreAndAcc.screenCenter();
+    	scoreAndAcc.x -= 250;
+    	scoreAndAcc.y += 50;
+
+		Difficulty.list = ["Hard"];
     }
 
 	override function update(elapsed:Float)
@@ -131,11 +145,28 @@ class CodeState extends MusicBeatState
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 			MusicBeatState.switchState(new MainMenuState());
 		}
+		
+		lerpScore = Math.floor(FlxMath.lerp(intendedScore, lerpScore, Math.exp(-elapsed * 24)));
+		lerpRating = FlxMath.lerp(intendedRating, lerpRating, Math.exp(-elapsed * 12));
+
+		if (Math.abs(lerpScore - intendedScore) <= 10)
+			lerpScore = intendedScore;
+		if (Math.abs(lerpRating - intendedRating) <= 0.01)
+			lerpRating = intendedRating;
+
+		var ratingSplit:Array<String> = Std.string(CoolUtil.floorDecimal(lerpRating * 100, 2)).split('.');
+		if(ratingSplit.length < 2) //No decimals, add an empty space
+			ratingSplit.push('');
+		
+		while(ratingSplit[1].length < 2) //Less than 2 decimals in it, add decimals then
+			ratingSplit[1] += '0';
+
+		scoreAndAcc.text = Language.getPhrase('personal_best', 'Personal Best: {1} ({2}%)', [lerpScore, ratingSplit.join('.')]);
     }
 
 	function invalidLOL() {
 		FlxG.camera.shake(0.0075, 0.50);
-		new FlxTimer().start(1, function(tmr:FlxTimer) {
+		new FlxTimer().start(0.5, function(tmr:FlxTimer) {
 			add(invalid);
 			new FlxTimer().start(5, function(tmr:FlxTimer) {
 				remove(invalid);
@@ -144,8 +175,16 @@ class CodeState extends MusicBeatState
 	}
 	
 	function startSongThing(songName:String = '') {
-		Song.loadFromJson(songName + "-hard", songName);
-		LoadingState.prepareToSong();
-		LoadingState.loadAndSwitchState(new PlayState());
+		intendedScore = Highscore.getScore(songName, 0);
+		intendedRating = Highscore.getRating(songName, 0);
+
+		add(scoreAndAcc);
+		new FlxTimer().start(2, function(tmr:FlxTimer) {
+			Song.loadFromJson(songName + "-hard", songName);
+			PlayState.isStoryMode = false;
+			PlayState.storyDifficulty = 0;
+			LoadingState.prepareToSong();
+			LoadingState.loadAndSwitchState(new PlayState());
+		});
     }
 }
