@@ -110,8 +110,8 @@ class CodeState extends MusicBeatState
 					canType = false;
 					switch(text.toLowerCase())
 					{
-						case "":
-							startSongThing('');
+						//case "":
+							//startSongThing('');
 						default:
 							invalidLOL();
 					}
