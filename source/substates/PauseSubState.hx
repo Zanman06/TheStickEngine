@@ -76,7 +76,7 @@ class PauseSubState extends MusicBeatSubstate
 		}
 		catch(e:Dynamic) {}
 		pauseMusic.volume = 0;
-		pauseMusic.play(false, FlxG.random.int(0, Std.int(pauseMusic.length / 2)));
+		if (getPauseSong() != 'jazzy-beat') pauseMusic.play(false, FlxG.random.int(0, Std.int(pauseMusic.length / 2))) else pauseMusic.play(false, 0);
 
 		FlxG.sound.list.add(pauseMusic);
 
